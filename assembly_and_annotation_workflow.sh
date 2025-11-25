@@ -4,6 +4,12 @@
 conda activate spades
 bash assembly.sh
 conda deactivate
+
+#predict ORFs
+conda activate transdecoder
+TransDecoder.LongOrfs -t merged_transcripts.fasta
+TransDecoder.Predict -t merged_transcripts.fasta
+conda deactivate
 #cluster contigs
 conda activate cd-hit
 bash cluster.sh
