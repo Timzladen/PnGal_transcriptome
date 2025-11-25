@@ -5,8 +5,8 @@ THREADS=64
 
 # Base directory
 BASE_DIR="/DKHB/users/timtd/transcriptomes"
-TRANSCRIPTOME="${BASE_DIR}/transcripts.fasta"
-SALMON_INDEX="${BASE_DIR}/salmon_index"
+TRANSCRIPTOME="${BASE_DIR}/trimmed/assembled/clustered_transcripts.fasta"
+SALMON_INDEX="${BASE_DIR}/salmon_index_clust"
 
 # Build index if it doesn’t already exist
 if [ ! -d "$SALMON_INDEX" ]; then
