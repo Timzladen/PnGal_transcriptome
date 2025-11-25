@@ -37,3 +37,52 @@ spades.py --rna --pe-12 'DIAVIR11_ZKRN250004463-1A_22MWFGLT4_L1_1 (paired, trimm
 
 
 
+# Directory containing DIAVIR assemblies
+BASEDIR= "/DATA/scratch/timtd/transcriptomes/trimmed/assembled"
+
+# Pattern for directories containing assemblies
+DIRPATTERN="DIAVIR*_assembled"
+
+# Name of FASTA file inside each assembly directory
+FAFILE="transcripts.fasta"   # <-- change if needed
+
+# Output files
+MERGED_RAW="merged_transcripts_raw.fasta"
+MERGED_DEDUP="merged_transcripts.fasta"
+
+echo "Collecting transcript FASTA files from: $DIRPATTERN"
+echo "Expecting file name: $FAFILE"
+echo
+
+# Remove old outputs if they exist
+rm -f $MERGED_RAW $MERGED_DEDUP
+
+# Loop through each DIAVIR assembly directory
+for d in $DIRPATTERN; do
+    if [[ -f "$d/$FAFILE" ]]; then
+        echo "Adding $d/$FAFILE"
+        cat "$d/$FAFILE" >> $MERGED_RAW
+    else
+        echo "WARNING: $FAFILE not found in $d"
+    fi
+done
+
+echo
+echo "Raw merged FASTA written to $MERGED_RAW"
+echo
+
+# Deduplicate the merged transcripts (exact sequence duplicates)
+# Requires seqkit or awk fallback
+
+if command -v seqkit >/dev/null 2>&1; then
+    echo "Deduplicating using seqkit..."
+    seqkit rmdup -s $MERGED_RAW > $MERGED_DEDUP
+else
+    echo "seqkit not found. Using awk deduplication (header-based)."
+    awk '/^>/{f=!seen[$0];seen[$0]=1}f' $MERGED_RAW > $MERGED_DEDUP
+fi
+
+echo
+echo "Final merged FASTA: $MERGED_DEDUP"
+echo "Done!"
+
