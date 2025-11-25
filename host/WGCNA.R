@@ -4,7 +4,25 @@ library(tidyverse)
 
 allowWGCNAThreads()        # use multithreading if available
 options(stringsAsFactors = FALSE)
+library(tximport)
+library(ALDEx2)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+base_path <- "/scratch/timtd/transcriptomes/trimmed/salmon_quant_clst"
+# Load sample metadata (CSV with columns: sample,condition)
+samples <- read.csv("/scratch/timtd/transcriptomes/trimmed/salmon_quant/sample_data.csv", stringsAsFactors = TRUE)
+files <- file.path(base_path, samples$sample, "quant.sf")
 
+#rownames(samples) <- samples$sample
+eggnog_full_named <- read.delim("/scratch/timtd/transcriptomes/trimmed/salmon_quant/eggnog_full_named_clean.tsv", header = TRUE, sep = "\t", quote = "")
+# Extract genus from species names
+library(stringr)
+eggnog_full_named$genus <- word(eggnog_full_named$spname, 1)
+
+
+txi <- tximport(files, type = "salmon", txOut = TRUE, countsFromAbundance = "no")
+raw_counts <- txi$counts
 # Inputs you already have:
 #   txi      : tximport list
 #   samples  : data.frame with rownames = sample IDs, includes 'condition' and 'biomass'
