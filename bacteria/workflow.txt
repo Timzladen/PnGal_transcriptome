@@ -1,1 +1,5 @@
+Clustered and annotated metatranscirptomes were analysed with aldex_analysis.R
+
 In the aldex_analysis.R you can find the script to process data and create plots used in the publication. Note there is additional script that may not be directly used in the publication
+
+MetaT taxonomy was obtained with Kraken using kraken.sh for taxonomy assignment and Kraken_process.R for analysis and visualization. 
